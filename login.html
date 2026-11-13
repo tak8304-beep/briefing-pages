@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#1f5eff" />
+  <title>경제 브리핑</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icon.png" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="static-shim.js"></script>
+</head>
+<body class="login-body">
+  <form id="form" class="login-card" autocomplete="off">
+    <img src="icons/icon-192.png" alt="" width="64" height="64" />
+    <h1>경제 브리핑</h1>
+    <p>설정한 암호를 입력하세요.<br />한 번 입력하면 이 기기에서는 다시 묻지 않습니다.</p>
+    <input id="pin" type="password" maxlength="64" placeholder="암호" autocomplete="current-password" required autofocus />
+    <button type="submit">확인</button>
+    <p id="err" class="login-err" role="alert"></p>
+  </form>
+  <script>
+    document.getElementById('form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const err = document.getElementById('err');
+      err.textContent = '';
+      try {
+        const res = await fetch('api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ pin: document.getElementById('pin').value }),
+        });
+        const data = await res.json();
+        if (res.ok) location.replace('./');
+        else err.textContent = data.error || '확인하지 못했습니다.';
+      } catch {
+        err.textContent = '인터넷에 연결하지 못했습니다.';
+      }
+    });
+  </script>
+</body>
+</html>
